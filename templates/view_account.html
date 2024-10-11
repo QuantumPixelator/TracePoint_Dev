@@ -1,50 +1,52 @@
-<!-- templates/view_account.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Your Account - TracePoint</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <style>
-        .account-details {
-            max-width: 600px;
-            margin: 20px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-        }
-        .account-details p {
-            margin: 10px 0;
-        }
-        .account-details p strong {
-            display: inline-block;
-            width: 150px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <title>View Account - TracePoint</title>
 </head>
 <body>
-    <header>
-        <h1>Your Account Information</h1>
-    </header>
-    <nav class="dashboard-nav">
-        {% if session.get('account_type') == 'Admin' %}
-            <a href="{{ url_for('admin_main') }}" class="btn">Dashboard</a>
-        {% elif session.get('account_type') == 'Manager' %}
-            <a href="{{ url_for('manager_main') }}" class="btn">Dashboard</a>
-        {% else %}
-            <a href="{{ url_for('user_main') }}" class="btn">Dashboard</a>
-        {% endif %}
-        <a href="{{ url_for('edit_account') }}" class="btn">Edit Account</a>
-        <a href="{{ url_for('change_password') }}" class="btn">Change Password</a>
-        <a href="{{ url_for('logout') }}" class="btn">Logout</a>
-    </nav>
-    <main>
-        <div class="account-details">
-            <p><strong>First Name:</strong> {{ user_info[0] }}</p>
-            <p><strong>Last Name:</strong> {{ user_info[1] }}</p>
-            <p><strong>Company Name:</strong> {{ user_info[2] }}</p>
-            <p><strong>Email Address:</strong> {{ user_info[3] }}</p>
+    <header>TracePoint - View Account</header>
+    <div class="container">
+        <img src="/static/images/logo.png" alt="TracePoint Logo" class="logo">
+        
+        <h2>Your Account Information</h2>
+        
+        <table>
+            <tr>
+                <th>First Name</th>
+                <td>{{ user_info[0] }}</td>
+            </tr>
+            <tr>
+                <th>Last Name</th>
+                <td>{{ user_info[1] }}</td>
+            </tr>
+            <tr>
+                <th>Company Name</th>
+                <td>{{ user_info[2] }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user_info[3] }}</td>
+            </tr>
+        </table>
+        
+        <div class="button-group">
+            <a href="/edit_account"><button type="button">Edit Account</button></a>
+            <a href="/user_main"><button type="button">Back to Dashboard</button></a>
+            <a href="/logout"><button type="button">Logout</button></a>
         </div>
-    </main>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
 </body>
 </html>

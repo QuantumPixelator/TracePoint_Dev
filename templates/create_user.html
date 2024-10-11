@@ -2,46 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/styles.css">
     <title>Create User - TracePoint</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
+    <header>TracePoint - Create User</header>
     <div class="container">
-        <div class="form-wrapper">
-            <h2>Create a New User Account</h2>
-            <form method="POST" action="{{ url_for('create_user') }}">
-                <div class="form-group">
-                    <label for="First">First Name</label>
-                    <input type="text" id="First" name="First" required>
-                </div>
-                <div class="form-group">
-                    <label for="Last">Last Name</label>
-                    <input type="text" id="Last" name="Last" required>
-                </div>
-                <div class="form-group">
-                    <label for="CompanyName">Company Name</label>
-                    <input type="text" id="CompanyName" name="CompanyName" required>
-                </div>
-                <div class="form-group">
-                    <label for="Email">Email Address</label>
-                    <input type="email" id="Email" name="Email" required>
-                </div>
-                <div class="form-group">
-                    <label for="AccountType">Account Type</label>
-                    <select name="AccountType" id="AccountType" required>
-                        <option value="User">User</option>
-                        <option value="Manager">Manager</option>
-                        {% if session.get('account_type') == 'Admin' %}
-                        <option value="Admin">Admin</option>
-                        {% endif %}
-                    </select>
-                </div>
-                <button type="submit" class="btn">Create User</button>
-            </form>
-            <div class="additional-action">
-                <a href="{{ url_for('admin_main') if session.get('account_type') == 'Admin' else url_for('manager_main') }}">Back to Dashboard</a>
-            </div>
+        <img src="/static/images/logo.png" alt="TracePoint Logo" class="logo">
+        
+        <h2>Create a New User</h2>
+        
+        <form action="/create_user" method="POST">
+            <input type="text" name="First" placeholder="First Name" required>
+            <input type="text" name="Last" placeholder="Last Name" required>
+            <input type="text" name="Email" placeholder="Email" required>
+            <input type="text" name="CompanyName" placeholder="Company Name" required>
+            <select name="AccountType" required>
+                <option value="User">User</option>
+                <option value="Manager">Manager</option>
+                <option value="Admin">Admin</option>
+            </select>
+            <button type="submit">Create User</button>
+        </form>
+        
+        <div class="button-group">
+            <a href="/admin_main"><button>Back to Dashboard</button></a>
+            <a href="/logout"><button>Logout</button></a>
         </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
     </div>
 </body>
 </html>

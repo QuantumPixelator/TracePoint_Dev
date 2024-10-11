@@ -1,3 +1,4 @@
+
 import sqlite3
 import hashlib
 import os
@@ -19,8 +20,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 start_db()
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def front_page():
@@ -33,24 +33,18 @@ def login():
         try:
             email = request.form['Email']
             password = request.form['Password']
-
             hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
             cur = con.cursor()
-
             # Fetch the user with the provided Email and Password
             cur.execute("SELECT * FROM Users WHERE Email = ? AND Password = ?", (email, hashed_password))
             user = cur.fetchone()
             if not user:
-                flash('Invalid email or password.')
+                flash('Invalid email or password.', 'danger')
                 return redirect(url_for('login'))
 
             session['email'] = user[0]
             session['account_type'] = user[5]
-
-            # Ensure user changes password on first login
-            if password == 'password':
-                return redirect(url_for('change_password'))
 
             # Redirect based on account type
             if user[5] == 'Admin':
@@ -68,7 +62,6 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    # Signup route remains for external signups if needed
     if request.method == 'POST':
         con = sqlite3.connect('database.db')
         try:
@@ -82,22 +75,21 @@ def signup():
             hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
             cur = con.cursor()
-
             # Check if the email already exists
             cur.execute("SELECT * FROM Users WHERE Email = ?", (email,))
             existing_user = cur.fetchone()
             if existing_user:
-                flash('Email already exists. Please use a different email.')
+                flash('Email already exists. Please use a different email.', 'danger')
                 return redirect(url_for('signup'))
 
             # Insert the new user into the database
-            cur.execute("""
-                INSERT INTO Users (Email, First, Last, CompanyName, Password, AccountType)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (email, first, last, company_name, hashed_password, account_type))
+            cur.execute(
+                "INSERT INTO Users (Email, First, Last, CompanyName, Password, AccountType) VALUES (?, ?, ?, ?, ?, ?)",
+                (email, first, last, company_name, hashed_password, account_type)
+            )
             con.commit()
 
-            flash('Account created successfully! Please log in with the default password and change it immediately.')
+            flash('Account created successfully! Please log in with the default password and change it immediately.', 'success')
             return redirect(url_for('login'))
         except Exception as e:
             print(f"Error: {e}")
@@ -109,7 +101,7 @@ def signup():
 @app.route('/create_user', methods=['GET', 'POST'])
 def create_user():
     if session.get('account_type') not in ['Admin', 'Manager']:
-        return redirect(url_for('login'))
+        return redirect(url_for('access_denied'))
 
     if request.method == 'POST':
         con = sqlite3.connect('database.db')
@@ -124,22 +116,21 @@ def create_user():
             hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
             cur = con.cursor()
-
             # Check if the email already exists
             cur.execute("SELECT * FROM Users WHERE Email = ?", (email,))
             existing_user = cur.fetchone()
             if existing_user:
-                flash('Email already exists. Please use a different email.')
+                flash('Email already exists. Please use a different email.', 'danger')
                 return redirect(url_for('create_user'))
 
             # Insert the new user into the database
-            cur.execute("""
-                INSERT INTO Users (Email, First, Last, CompanyName, Password, AccountType)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (email, first, last, company_name, hashed_password, account_type))
+            cur.execute(
+                "INSERT INTO Users (Email, First, Last, CompanyName, Password, AccountType) VALUES (?, ?, ?, ?, ?, ?)",
+                (email, first, last, company_name, hashed_password, account_type)
+            )
             con.commit()
 
-            flash('User account created successfully!')
+            flash('User account created successfully!', 'success')
             return redirect(url_for('create_user'))
         except Exception as e:
             print(f"Error: {e}")
@@ -149,45 +140,28 @@ def create_user():
             con.close()
     return render_template('create_user.html')
 
-@app.route('/change_password', methods=['GET', 'POST'])
-def change_password():
-    if 'email' not in session:
-        return redirect(url_for('login'))
-
-    if request.method == 'POST':
-        new_password = request.form['NewPassword']
-        hashed_password = hashlib.sha256(new_password.encode()).hexdigest()
-
-        con = sqlite3.connect('database.db')
-        try:
-            cur = con.cursor()
-            cur.execute("UPDATE Users SET Password = ? WHERE Email = ?", (hashed_password, session['email']))
-            con.commit()
-            flash('Password changed successfully.')
-            return redirect(url_for('front_page'))
-        except Exception as e:
-            print(f"Error: {e}")
-            return render_template('error.html')
-        finally:
-            con.close()
-    return render_template('change_password.html')
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('You have been logged out.', 'success')
+    return redirect(url_for('login'))
 
 @app.route('/admin_main')
 def admin_main():
     if session.get('account_type') != 'Admin':
-        return redirect(url_for('login'))
+        return redirect(url_for('access_denied'))
     return render_template('admin_main.html')
 
 @app.route('/manager_main')
 def manager_main():
     if session.get('account_type') != 'Manager':
-        return redirect(url_for('login'))
+        return redirect(url_for('access_denied'))
     return render_template('manager_main.html')
 
 @app.route('/user_main')
 def user_main():
-    if session.get('account_type') != 'User':
-        return redirect(url_for('login'))
+    if 'email' not in session:
+        return redirect(url_for('access_denied'))
     return render_template('user_main.html')
 
 @app.route('/view_account', methods=['GET'])
@@ -221,13 +195,13 @@ def edit_account():
         con = sqlite3.connect('database.db')
         try:
             cur = con.cursor()
-            cur.execute("""
-                UPDATE Users SET First = ?, Last = ?, CompanyName = ?, Email = ?
-                WHERE Email = ?
-            """, (first, last, company_name, email, session['email']))
+            cur.execute(
+                "UPDATE Users SET First = ?, Last = ?, CompanyName = ?, Email = ? WHERE Email = ?",
+                (first, last, company_name, email, session['email'])
+            )
             con.commit()
             session['email'] = email  # Update session email if changed
-            flash('Account information updated successfully.')
+            flash('Account information updated successfully.', 'success')
             return redirect(url_for('view_account'))
         except Exception as e:
             print(f"Error: {e}")
@@ -248,12 +222,6 @@ def edit_account():
         con.close()
     return render_template('edit_account.html', user_info=user_info)
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    flash('You have been logged out.')
-    return redirect(url_for('login'))
-
 @app.route('/view_users')
 def view_users():
     if session.get('account_type') != 'Admin':
@@ -271,58 +239,88 @@ def view_users():
         con.close()
     return render_template('view_users.html', users=users)
 
-@app.route('/upload_files', methods=['GET', 'POST'])
-def upload_files():
-    if session.get('account_type') not in ['Admin', 'Manager']:
-        return redirect(url_for('login'))
+@app.route('/view_files/<path:subpath>', methods=['GET', 'POST'])
+@app.route('/view_files/', defaults={'subpath': ''}, methods=['GET', 'POST'])
+def view_files(subpath):
+    if 'email' not in session:
+        return redirect(url_for('access_denied'))
+    full_path = os.path.join(app.config['UPLOAD_FOLDER'], subpath)
+
+    # Handle folder creation
+    if request.method == 'POST':
+        folder_name = request.form.get('folder_name')
+        if folder_name:
+            new_folder_path = os.path.join(full_path, folder_name)
+            try:
+                os.makedirs(new_folder_path)
+                flash('Folder created successfully!', 'success')
+            except OSError as e:
+                flash(f'Error creating folder: {e}', 'danger')
+
+    # Get folder and file list
+    try:
+        items = os.listdir(full_path)
+        folders = [item for item in items if os.path.isdir(os.path.join(full_path, item))]
+        files = [item for item in items if os.path.isfile(os.path.join(full_path, item))]
+    except FileNotFoundError:
+        flash('The specified path does not exist.', 'danger')
+        return redirect(url_for('view_files'))
+
+    return render_template('view_files.html', subpath=subpath, folders=folders, files=files)
+
+@app.route('/upload_file/<path:subpath>', methods=['GET', 'POST'])
+def upload_file(subpath):
+    if 'email' not in session:
+        return redirect(url_for('access_denied'))
+    full_path = os.path.join(app.config['UPLOAD_FOLDER'], subpath)
 
     if request.method == 'POST':
+        # Check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part', 'danger')
+            return redirect(request.url)
+        file = request.files['file']
+        # If user does not select a file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file', 'danger')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(full_path, filename))
+            flash('File successfully uploaded', 'success')
+            return redirect(url_for('view_files', subpath=subpath))
+
+    return render_template('upload_files.html', subpath=subpath)
+
+@app.route('/access_denied')
+def access_denied():
+    return render_template('access_denied.html')
+
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
         email = request.form['Email']
-        files = request.files.getlist('Files')
-
-        # Create user-specific upload directory
-        user_upload_folder = os.path.join(app.config['UPLOAD_FOLDER'], email)
-        os.makedirs(user_upload_folder, exist_ok=True)
-
-        for file in files:
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(user_upload_folder, filename))
-
-        flash('Files uploaded successfully.')
-        return redirect(url_for('upload_files'))
-
-    con = sqlite3.connect('database.db')
-    try:
-        cur = con.cursor()
-        cur.execute("SELECT Email, CompanyName FROM Users")
-        users = cur.fetchall()
-    except Exception as e:
-        print(f"Error: {e}")
-        return render_template('error.html')
-    finally:
-        con.close()
-    return render_template('upload_files.html', users=users)
-
-@app.route('/view_files')
-def view_files():
-    if 'email' not in session:
+        # Placeholder for sending reset link functionality
+        flash('A password reset link has been sent to your email.', 'info')
         return redirect(url_for('login'))
+    return render_template('forgot_password.html')
 
-    user_upload_folder = os.path.join(app.config['UPLOAD_FOLDER'], session['email'])
-    if not os.path.exists(user_upload_folder):
-        files = []
-    else:
-        files = os.listdir(user_upload_folder)
-    return render_template('view_files.html', files=files)
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    if request.method == 'POST':
+        new_password = request.form['NewPassword']
+        confirm_password = request.form['ConfirmPassword']
+        if new_password != confirm_password:
+            flash('Passwords do not match.', 'danger')
+            return redirect(url_for('reset_password'))
 
-@app.route('/download_file/<filename>')
-def download_file(filename):
-    if 'email' not in session:
+        # Placeholder for updating the password in the database
+        flash('Your password has been successfully reset.', 'success')
         return redirect(url_for('login'))
-
-    user_upload_folder = os.path.join(app.config['UPLOAD_FOLDER'], session['email'])
-    return send_from_directory(user_upload_folder, filename, as_attachment=True)
+    return render_template('reset_password.html')
 
 if __name__ == '__main__':
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
     app.run(debug=True)

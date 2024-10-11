@@ -1,26 +1,22 @@
-<!-- templates/error.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/styles.css">
     <title>Error - TracePoint</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <style>
-        .message {
-            max-width: 600px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 30px;
-            text-align: center;
-            border-radius: 8px;
-        }
-    </style>
 </head>
 <body>
-    <div class="message">
-        <h2>Something Went Wrong</h2>
-        <p>We're sorry, but an unexpected error has occurred.</p>
-        <a href="{{ url_for('front_page') }}" class="btn">Return to Home Page</a>
+    <header>TracePoint - Error</header>
+    <div class="container">
+        <img src="/static/images/logo.png" alt="TracePoint Logo" class="logo">
+        
+        <h2>An Error Has Occurred</h2>
+        <p>We're sorry, but something went wrong. Please try again or contact support if the problem persists.</p>
+        
+        <div class="button-group">
+            <a href="/login"><button type="button">Back to Login</button></a>
+        </div>
     </div>
 </body>
 </html>

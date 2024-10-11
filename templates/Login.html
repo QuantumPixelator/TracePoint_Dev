@@ -1,46 +1,37 @@
-<!-- templates/login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/styles.css">
     <title>Login - TracePoint</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <style>
-        .additional-action {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .additional-action a {
-            color: #007BFF;
-            text-decoration: none;
-        }
-        .additional-action a:hover {
-            text-decoration: underline;
-        }
-    </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to TracePoint</h1>
-    </header>
+    <header>TracePoint - Login</header>
     <div class="container">
-        <div class="form-wrapper">
+        <img src="/static/images/logo.png" alt="TracePoint Logo" class="logo">
+        
+        <form action="/login" method="POST">
             <h2>Login to Your Account</h2>
-            <form method="POST" action="{{ url_for('login') }}">
-                <div class="form-group">
-                    <label for="Email">Email Address</label>
-                    <input type="email" id="Email" name="Email" required>
-                </div>
-                <div class="form-group">
-                    <label for="Password">Password</label>
-                    <input type="password" id="Password" name="Password" required>
-                </div>
-                <button type="submit" class="btn">Login</button>
-            </form>
-            <div class="additional-action">
-                Don't have an account? <a href="{{ url_for('signup') }}">Sign up here</a>.
-            </div>
+            <input type="text" name="Email" placeholder="Email" required>
+            <input type="password" name="Password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        
+        <div class="button-group">
+            <a href="/signup"><button>Create an Account</button></a>
+            <a href="/forgot_password"><button>Forgot Password</button></a>
         </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
     </div>
 </body>
 </html>

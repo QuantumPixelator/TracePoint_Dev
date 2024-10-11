@@ -1,49 +1,40 @@
-<!-- templates/edit_account.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/styles.css">
     <title>Edit Account - TracePoint</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <header>
-        <h1>Edit Your Account Information</h1>
-    </header>
-    <nav class="dashboard-nav">
-        {% if session.get('account_type') == 'Admin' %}
-            <a href="{{ url_for('admin_main') }}" class="btn">Dashboard</a>
-        {% elif session.get('account_type') == 'Manager' %}
-            <a href="{{ url_for('manager_main') }}" class="btn">Dashboard</a>
-        {% else %}
-            <a href="{{ url_for('user_main') }}" class="btn">Dashboard</a>
-        {% endif %}
-        <a href="{{ url_for('view_account') }}" class="btn">View Account</a>
-        <a href="{{ url_for('change_password') }}" class="btn">Change Password</a>
-        <a href="{{ url_for('logout') }}" class="btn">Logout</a>
-    </nav>
+    <header>TracePoint - Edit Account</header>
     <div class="container">
-        <div class="form-wrapper">
-            <form method="POST" action="{{ url_for('edit_account') }}">
-                <div class="form-group">
-                    <label for="First">First Name</label>
-                    <input type="text" id="First" name="First" value="{{ user_info[0] }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="Last">Last Name</label>
-                    <input type="text" id="Last" name="Last" value="{{ user_info[1] }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="CompanyName">Company Name</label>
-                    <input type="text" id="CompanyName" name="CompanyName" value="{{ user_info[2] }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="Email">Email Address</label>
-                    <input type="email" id="Email" name="Email" value="{{ user_info[3] }}" required>
-                </div>
-                <button type="submit" class="btn">Update Account</button>
-            </form>
+        <img src="/static/images/logo.png" alt="TracePoint Logo" class="logo">
+        
+        <h2>Edit Your Account Information</h2>
+        
+        <form action="/edit_account" method="POST">
+            <input type="text" name="First" value="{{ user_info[0] }}" placeholder="First Name" required>
+            <input type="text" name="Last" value="{{ user_info[1] }}" placeholder="Last Name" required>
+            <input type="text" name="CompanyName" value="{{ user_info[2] }}" placeholder="Company Name" required>
+            <input type="text" name="Email" value="{{ user_info[3] }}" placeholder="Email" required>
+            <button type="submit">Save Changes</button>
+        </form>
+        
+        <div class="button-group">
+            <a href="/user_main"><button type="button">Back to Dashboard</button></a>
+            <a href="/logout"><button type="button">Logout</button></a>
         </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
     </div>
 </body>
 </html>

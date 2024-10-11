@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <title>Delete Account - TracePoint</title>
+</head>
+<body>
+    <header>TracePoint - Delete Account</header>
+    <div class="container">
+        <img src="/static/images/logo.png" alt="TracePoint Logo" class="logo">
+        
+        <h2>Delete Your Account</h2>
+        <p>Warning: Deleting your account is permanent and cannot be undone. Are you sure you want to proceed?</p>
+        
+        <form action="/delete_account" method="POST">
+            <button type="submit" class="danger-button">Delete Account</button>
+        </form>
+        
+        <div class="button-group">
+            <a href="/user_main"><button type="button">Cancel</button></a>
+        </div>
+    </div>
+</body>
+</html>

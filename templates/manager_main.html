@@ -2,22 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/styles.css">
     <title>Manager Dashboard - TracePoint</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <header>
-        <h1>Manager Dashboard</h1>
-    </header>
-    <nav class="dashboard-nav">
-        <a href="{{ url_for('create_user') }}" class="btn">Create User</a>
-        <a href="{{ url_for('upload_files') }}" class="btn">Upload Files</a>
-        <a href="{{ url_for('edit_account') }}" class="btn">Account Settings</a>
-        <a href="{{ url_for('change_password') }}" class="btn">Change Password</a>
-        <a href="{{ url_for('logout') }}" class="btn">Logout</a>
-    </nav>
-    <main>
-        <p>Welcome to the manager dashboard. Use the navigation above to manage files and your account.</p>
-    </main>
+    <header>TracePoint - Manager Dashboard</header>
+    <div class="container manager-dashboard">
+        <img src="/static/images/logo.png" alt="TracePoint Logo" class="logo">
+        
+        <h2>Welcome, Manager!</h2>
+        <div class="button-group">
+            <a href="/create_user"><button>Create User</button></a>
+            <a href="/view_users"><button>View Users</button></a>
+            <a href="/upload_files"><button>Upload Files</button></a>
+            <a href="/view_files"><button>View Files</button></a>
+        </div>
+        
+        <div class="button-group">
+            <a href="/logout"><button>Logout</button></a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
 </body>
 </html>

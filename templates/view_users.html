@@ -1,73 +1,55 @@
-<!-- templates/view_users.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/styles.css">
     <title>View Users - TracePoint</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #007BFF;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        .table-container {
-            width: 90%;
-            margin: 0 auto;
-        }
-    </style>
 </head>
 <body>
-    <header>
-        <h1>All Users</h1>
-    </header>
-    <nav class="dashboard-nav">
-        <a href="{{ url_for('admin_main') }}" class="btn">Dashboard</a>
-        <a href="{{ url_for('create_user') }}" class="btn">Create User</a>
-        <a href="{{ url_for('edit_account') }}" class="btn">Account Settings</a>
-        <a href="{{ url_for('change_password') }}" class="btn">Change Password</a>
-        <a href="{{ url_for('logout') }}" class="btn">Logout</a>
-    </nav>
-    <main>
-        <div class="table-container">
-            {% if users %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Company Name</th>
-                            <th>Account Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in users %}
-                        <tr>
-                            <td>{{ user[0] }}</td>
-                            <td>{{ user[1] }}</td>
-                            <td>{{ user[2] }}</td>
-                            <td>{{ user[3] }}</td>
-                            <td>{{ user[4] }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No users found.</p>
-            {% endif %}
+    <header>TracePoint - View Users</header>
+    <div class="container">
+        <img src="/static/images/logo.png" alt="TracePoint Logo" class="logo">
+        
+        <h2>All Users</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Company Name</th>
+                    <th>Account Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user[0] }}</td>
+                    <td>{{ user[1] }}</td>
+                    <td>{{ user[2] }}</td>
+                    <td>{{ user[3] }}</td>
+                    <td>{{ user[4] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="button-group">
+            <a href="/admin_main"><button type="button">Back to Dashboard</button></a>
+            <a href="/logout"><button type="button">Logout</button></a>
         </div>
-    </main>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
 </body>
 </html>
