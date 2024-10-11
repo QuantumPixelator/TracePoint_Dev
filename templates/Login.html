@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FileBoss Login</title>
+    <link rel="stylesheet" href="/static/Login.css" />
+</head>
+
+<body>
+    <!-- Border -->
+    <div class="outer-border">
+        <div class="mid-border">
+            <div class="inner-border">
+                <!-- Logo Place Holder -->
+                <div class="logo"><img src="/static/logo.png" /></div>
+            </div>
+
+            <!-- Login Form -->
+            <form action="{{url_for('login')}}" method="POST">
+                <div class="login-container">
+                    <!-- Login Input Group -->
+                    <div class="input-group">
+                        <label for="Email">Email:</label>
+                        <input type="text" id="Email" name="Email" placeholder="Email" required="">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="Password" placeholder="Password" required="">
+                    </div>
+
+                    <!-- Login Button -->
+                    <button class="login-btn" type="submit" value="Login">Login</button>
+                </div>
+            </form>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="{{url_for('signup')}}">Create a New Account</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

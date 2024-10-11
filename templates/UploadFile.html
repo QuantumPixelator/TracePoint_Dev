@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Upload File Screen</title>
+        <link rel="stylesheet" href="/static/UploadFile.css">
+    </head>
+
+    <body>
+        <div class="outer-border">
+            <div class="mid-border">
+                <div class="inner-border">
+
+                    <div class="logo"><img src="/static/logo.png" /></div>
+                    <a href="/"><button class="signout-btn" type="button">Sign Out</button></a>
+                    <div class="corners">
+                        <div class="feed">
+                            <div class="title-box">
+                                <h1>Upload A File</h1>
+
+                            </div>
+                            <div class="select">
+                                <form action="{{url_for('uploadfile')}}" method="POST" enctype="multipart/form-data">
+                                    <input type="file" id="file" name="file">
+                                    <button class="submit-btn" type="submit">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+    </body>
+
+</html>

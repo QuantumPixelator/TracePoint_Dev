@@ -1,0 +1,202 @@
+html,
+body {
+    height: max-content;
+    margin: auto auto;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(#3AAFA9, #2B7A78, #17252A);
+}
+
+h1 {
+
+    padding: 5px;
+    font-weight: bold;
+}
+
+h2 {
+    border: 2px solid #3AAFA9;
+    width: 20%;
+    margin: auto auto;
+    padding: 5px;
+
+}
+
+h3 {
+    border: 2px solid #3AAFA9;
+    font-weight: normal;
+    padding: 10px;
+    font-size: 18px;
+}
+
+.p {
+    font-size: 16px;
+    color: #1d2129;
+}
+
+.outer-border {
+    border: 2px solid #DEF2F1;
+    height: max-content;
+    min-width: 90%;
+    padding: 10px;
+    margin: 10px;
+}
+
+.mid-border {
+    border: 6px solid #DEF2F1;
+    min-height: 100vh;
+    min-width: 96%;
+    padding: 6px;
+    margin: auto;
+}
+
+.inner-border {
+    position: relative;
+    border: 2px solid #DEF2F1;
+    min-height: 100%;
+    padding: 10px;
+    margin: auto;
+    margin-bottom: 100px;
+}
+
+.logo {
+    text-align: center;
+    margin: 10px;
+}
+
+.logo img {
+    width: 70px;
+    height: 70px;
+}
+
+
+
+.home-btn {
+    position: absolute;
+    top: 20px;
+    left: 135px;
+    margin: 10px 10px;
+    width: 100px;
+    height: 50px;
+    background-color: #DEF2F1;
+    cursor: pointer;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 15px;
+    transition: all 0.2s ease-in-out;
+}
+
+.signout-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    margin: 10px 10px;
+    width: 100px;
+    height: 50px;
+    background-color: #DEF2F1;
+    cursor: pointer;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 15px;
+    transition: all 0.2s ease-in-out;
+}
+
+.submit-btn {
+    text-align: center;
+    display: block;
+    margin: auto auto;
+    position: relative;
+    top: 20px;
+    width: 100px;
+    height: 50px;
+    background-color: #DEF2F1;
+    cursor: pointer;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 15px;
+    transition: all 0.2s ease-in-out;
+}
+
+
+.home-btn:hover,
+.signout-btn:hover,
+.submit-btn:hover {
+    background-color: #3AAFA9;
+    box-shadow: 3px 3px 15px 0px rgba(82, 82, 82, 0.85);
+}
+
+
+.corners {
+    background: #978b8b;
+    height: max-content;
+    margin: 50px auto;
+    width: 700px;
+    position: relative;
+    min-height: 100vh;
+    box-shadow: 0 1px 7px hsla(0, 0%, 0%, 0.2);
+    background-attachment: fixed;
+    background-blend-mode: multiply;
+}
+
+.corners:after,
+.corners:before {
+    background: #3AAFA9;
+    content: '';
+    height: 50px;
+    position: absolute;
+    top: -25px;
+    width: 100px;
+    box-shadow: 0 5px 10px -7px hsla(0, 0%, 0%, 0.5);
+}
+
+.corners:after {
+    left: -50px;
+    transform: rotate(-45deg);
+}
+
+.corners:before {
+    right: -50px;
+    transform: rotate(45deg);
+}
+
+.feed {
+    margin: auto auto;
+    width: 600px;
+    padding: 10px 0;
+}
+
+.title-box {
+    text-align: center;
+    background: #80b4a9;
+    height: max-content;
+    box-shadow: 0 1px 7px hsla(0, 0%, 0%, 0.2);
+    background-attachment: fixed;
+    background-blend-mode: multiply;
+    font-size: 13px;
+}
+
+.select {
+    text-align: center;
+    margin-top: 35px;
+    padding: 30px;
+    border: 2px solid #17252A;
+    background-color: #9dcaca;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.border-box {
+    text-align: center;
+    background-color: #9dcaca;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.users {
+    text-align: center;
+    margin-top: 45px;
+    border: 2px solid #17252A;
+    background-color: #9dcaca;
+    font-weight: bold;
+    font-size: 20px;
+}
