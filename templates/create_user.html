@@ -1,32 +1,15 @@
-<!-- templates/signup.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign Up - TracePoint</title>
+    <title>Create User - TracePoint</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <style>
-        .additional-action {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .additional-action a {
-            color: #007BFF;
-            text-decoration: none;
-        }
-        .additional-action a:hover {
-            text-decoration: underline;
-        }
-    </style>
 </head>
 <body>
-    <header>
-        <h1>Create an Account at TracePoint</h1>
-    </header>
     <div class="container">
         <div class="form-wrapper">
-            <h2>Sign Up</h2>
-            <form method="POST" action="{{ url_for('signup') }}">
+            <h2>Create a New User Account</h2>
+            <form method="POST" action="{{ url_for('create_user') }}">
                 <div class="form-group">
                     <label for="First">First Name</label>
                     <input type="text" id="First" name="First" required>
@@ -48,13 +31,15 @@
                     <select name="AccountType" id="AccountType" required>
                         <option value="User">User</option>
                         <option value="Manager">Manager</option>
+                        {% if session.get('account_type') == 'Admin' %}
                         <option value="Admin">Admin</option>
+                        {% endif %}
                     </select>
                 </div>
-                <button type="submit" class="btn">Sign Up</button>
+                <button type="submit" class="btn">Create User</button>
             </form>
             <div class="additional-action">
-                Already have an account? <a href="{{ url_for('login') }}">Login here</a>.
+                <a href="{{ url_for('admin_main') if session.get('account_type') == 'Admin' else url_for('manager_main') }}">Back to Dashboard</a>
             </div>
         </div>
     </div>

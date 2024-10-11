@@ -1,13 +1,11 @@
+import hmac
 import hashlib
-secret_mod = 18446744073709551615
 
-# Doesn't actually add any cryptographic complexity
+SECRET_KEY = b'supersecretkey'  # Use a secure key in production
 
-def generate_token(Email):
-    hashed_role = int(hashlib.sha256(Email.encode()).hexdigest(), 16) % secret_mod
-    return str(hashed_role)
+def generate_token(email):
+    return hmac.new(SECRET_KEY, email.encode(), hashlib.sha256).hexdigest()
 
-def check_token(token, Email):
-    hashed_role = int(hashlib.sha256(Email.encode()).hexdigest(), 16) % secret_mod
-    token = int(token)
-    return hashed_role == token
+def check_token(token, email):
+    expected_token = generate_token(email)
+    return hmac.compare_digest(expected_token, token)

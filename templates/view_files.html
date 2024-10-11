@@ -1,0 +1,50 @@
+<!-- templates/view_files.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Files - TracePoint</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        /* Additional styles for the file list */
+        .file-list {
+            margin: 20px 0;
+        }
+        .file-list li {
+            margin-bottom: 10px;
+        }
+        .file-list a {
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .file-list a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Your Files</h1>
+    </header>
+    <nav class="dashboard-nav">
+        <a href="{{ url_for('user_main') }}" class="btn">Dashboard</a>
+        <a href="{{ url_for('edit_account') }}" class="btn">Account Settings</a>
+        <a href="{{ url_for('change_password') }}" class="btn">Change Password</a>
+        <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+    </nav>
+    <main>
+        {% if files %}
+            <ul class="file-list">
+                {% for file in files %}
+                    <li>
+                        <a href="{{ url_for('download_file', filename=file) }}">{{ file }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>You have no files uploaded.</p>
+        {% endif %}
+    </main>
+</body>
+</html>

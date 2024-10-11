@@ -1,0 +1,23 @@
+<!-- templates/user_main.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard - TracePoint</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>User Dashboard</h1>
+    </header>
+    <nav class="dashboard-nav">
+        <a href="{{ url_for('view_files') }}" class="btn">View Your Files</a>
+        <a href="{{ url_for('edit_account') }}" class="btn">Account Settings</a>
+        <a href="{{ url_for('change_password') }}" class="btn">Change Password</a>
+        <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+    </nav>
+    <main>
+        <p>Welcome to your dashboard. Use the navigation above to access your files and account settings.</p>
+    </main>
+</body>
+</html>

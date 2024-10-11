@@ -1,0 +1,50 @@
+<!-- templates/view_account.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Account - TracePoint</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .account-details {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .account-details p {
+            margin: 10px 0;
+        }
+        .account-details p strong {
+            display: inline-block;
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Your Account Information</h1>
+    </header>
+    <nav class="dashboard-nav">
+        {% if session.get('account_type') == 'Admin' %}
+            <a href="{{ url_for('admin_main') }}" class="btn">Dashboard</a>
+        {% elif session.get('account_type') == 'Manager' %}
+            <a href="{{ url_for('manager_main') }}" class="btn">Dashboard</a>
+        {% else %}
+            <a href="{{ url_for('user_main') }}" class="btn">Dashboard</a>
+        {% endif %}
+        <a href="{{ url_for('edit_account') }}" class="btn">Edit Account</a>
+        <a href="{{ url_for('change_password') }}" class="btn">Change Password</a>
+        <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+    </nav>
+    <main>
+        <div class="account-details">
+            <p><strong>First Name:</strong> {{ user_info[0] }}</p>
+            <p><strong>Last Name:</strong> {{ user_info[1] }}</p>
+            <p><strong>Company Name:</strong> {{ user_info[2] }}</p>
+            <p><strong>Email Address:</strong> {{ user_info[3] }}</p>
+        </div>
+    </main>
+</body>
+</html>

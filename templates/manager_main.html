@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manager Dashboard - TracePoint</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Manager Dashboard</h1>
+    </header>
+    <nav class="dashboard-nav">
+        <a href="{{ url_for('create_user') }}" class="btn">Create User</a>
+        <a href="{{ url_for('upload_files') }}" class="btn">Upload Files</a>
+        <a href="{{ url_for('edit_account') }}" class="btn">Account Settings</a>
+        <a href="{{ url_for('change_password') }}" class="btn">Change Password</a>
+        <a href="{{ url_for('logout') }}" class="btn">Logout</a>
+    </nav>
+    <main>
+        <p>Welcome to the manager dashboard. Use the navigation above to manage files and your account.</p>
+    </main>
+</body>
+</html>

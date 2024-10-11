@@ -1,9 +1,9 @@
-<!-- templates/error.html -->
+<!-- templates/no_matching_user.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Error - TracePoint</title>
+    <title>No Matching User - TracePoint</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
         .message {
@@ -14,13 +14,18 @@
             text-align: center;
             border-radius: 8px;
         }
+        .message a {
+            display: inline-block;
+            margin: 10px 5px;
+        }
     </style>
 </head>
 <body>
     <div class="message">
-        <h2>Something Went Wrong</h2>
-        <p>We're sorry, but an unexpected error has occurred.</p>
-        <a href="{{ url_for('front_page') }}" class="btn">Return to Home Page</a>
+        <h2>No Account Found</h2>
+        <p>The email or password you entered is incorrect.</p>
+        <a href="{{ url_for('login') }}" class="btn">Try Again</a>
+        <a href="{{ url_for('signup') }}" class="btn">Sign Up</a>
     </div>
 </body>
 </html>

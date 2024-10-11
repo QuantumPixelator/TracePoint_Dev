@@ -10,6 +10,7 @@ def start_db():
             Email TEXT PRIMARY KEY,
             First TEXT,
             Last TEXT,
+            CompanyName TEXT,
             Password TEXT,
             AccountType TEXT
         )
@@ -21,9 +22,11 @@ def start_db():
             FileId INTEGER PRIMARY KEY AUTOINCREMENT,
             FileName TEXT,
             FileData BLOB,
-            Email TEXT
+            Email TEXT,
+            FOREIGN KEY (Email) REFERENCES Users (Email)
         )
     ''')
 
     conn.commit()
     cursor.close()
+    conn.close()

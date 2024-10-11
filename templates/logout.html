@@ -1,9 +1,9 @@
-<!-- templates/error.html -->
+<!-- templates/logout.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Error - TracePoint</title>
+    <title>Logged Out - TracePoint</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
         .message {
@@ -18,9 +18,8 @@
 </head>
 <body>
     <div class="message">
-        <h2>Something Went Wrong</h2>
-        <p>We're sorry, but an unexpected error has occurred.</p>
-        <a href="{{ url_for('front_page') }}" class="btn">Return to Home Page</a>
+        <h2>You have been logged out.</h2>
+        <a href="{{ url_for('login') }}" class="btn">Return to Login Page</a>
     </div>
 </body>
 </html>
