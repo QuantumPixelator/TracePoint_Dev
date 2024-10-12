@@ -1,4 +1,3 @@
-
 import sqlite3
 import hashlib
 import os
@@ -20,7 +19,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 start_db()
 
 def allowed_file(filename):
-    return '.' in filename and            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def front_page():
@@ -59,7 +58,6 @@ def login():
         finally:
             con.close()
     return render_template('login.html')
-
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -157,7 +155,6 @@ def manager_main():
     if session.get('account_type') != 'Manager':
         return redirect(url_for('access_denied'))
     return render_template('manager_main.html')
-
 @app.route('/user_main')
 def user_main():
     if 'email' not in session:
@@ -268,11 +265,16 @@ def view_files(subpath):
 
     return render_template('view_files.html', subpath=subpath, folders=folders, files=files)
 
-@app.route('/upload_file/<path:subpath>', methods=['GET', 'POST'])
-def upload_file(subpath):
+@app.route('/upload_files', methods=['GET', 'POST'])
+@app.route('/upload_files/<path:subpath>', methods=['GET', 'POST'])
+def upload_file(subpath=''):
     if 'email' not in session:
         return redirect(url_for('access_denied'))
     full_path = os.path.join(app.config['UPLOAD_FOLDER'], subpath)
+
+    # Ensure the directory exists
+    if not os.path.exists(full_path):
+        os.makedirs(full_path)
 
     if request.method == 'POST':
         # Check if the post request has the file part
@@ -280,8 +282,7 @@ def upload_file(subpath):
             flash('No file part', 'danger')
             return redirect(request.url)
         file = request.files['file']
-        # If user does not select a file, browser also
-        # submit an empty part without filename
+        # If user does not select a file, browser also submits an empty part without filename
         if file.filename == '':
             flash('No selected file', 'danger')
             return redirect(request.url)
