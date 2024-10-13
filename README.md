@@ -1,8 +1,8 @@
-# **Secure Document Management System (SDMS)**
+# **TracePoint**
 
 ## Overview:
 
-- SDMS is a web-based application designed to securely manage documents within an organization.
+- TracePoint is a web-based application designed to securely manage documents within an organization.
 It provides features such as document upload, search, all while enforcing role-based access control (RBAC) to ensure data security and integrity.
 
 ## Features:
@@ -78,3 +78,5 @@ python ./main.py
 - Access the application in your web browser at http://localhost:port (port number may vary depending on your configuration).
 - Register as a new user or log in with existing credentials.
 - Explore the various features of the application, such as document upload, search, file management, and role based access control.
+
+- Based on 
