@@ -1,3 +1,4 @@
+
 import sqlite3
 import hashlib
 import os
@@ -58,6 +59,7 @@ def login():
         finally:
             con.close()
     return render_template('login.html')
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -155,6 +157,7 @@ def manager_main():
     if session.get('account_type') != 'Manager':
         return redirect(url_for('access_denied'))
     return render_template('manager_main.html')
+
 @app.route('/user_main')
 def user_main():
     if 'email' not in session:
@@ -273,23 +276,30 @@ def upload_file(subpath=''):
     full_path = os.path.join(app.config['UPLOAD_FOLDER'], subpath)
 
     # Ensure the directory exists
-    if not os.path.exists(full_path):
-        os.makedirs(full_path)
+    try:
+        if not os.path.exists(full_path):
+            os.makedirs(full_path)
+    except OSError as e:
+        flash(f'Error creating directory: {e}', 'danger')
+        return redirect(request.url)
 
     if request.method == 'POST':
         # Check if the post request has the file part
         if 'file' not in request.files:
-            flash('No file part', 'danger')
+            flash('No file part in the request', 'danger')
             return redirect(request.url)
         file = request.files['file']
         # If user does not select a file, browser also submits an empty part without filename
         if file.filename == '':
-            flash('No selected file', 'danger')
+            flash('No file selected', 'danger')
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(full_path, filename))
-            flash('File successfully uploaded', 'success')
+            try:
+                file.save(os.path.join(full_path, filename))
+                flash('File successfully uploaded', 'success')
+            except Exception as e:
+                flash(f'Error saving file: {e}', 'danger')
             return redirect(url_for('view_files', subpath=subpath))
 
     return render_template('upload_files.html', subpath=subpath)
