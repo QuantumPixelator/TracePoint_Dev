@@ -34,11 +34,11 @@
             <ul class="files">
                 {% for file in files %}
                 <li>
-                    <a href="/download_file/{{ file }}">{{ file }}</a>
+                    <a href="{{ url_for('download_file', filename=subpath + '/' + file) }}">{{ file }}</a>
                 </li>
                 {% endfor %}
-            </ul>
-        </div>
+            </ul>            
+        </div>        
         
         <div class="button-group">
             <a href="/upload_files/{{ subpath }}"><button>Upload Files</button></a>

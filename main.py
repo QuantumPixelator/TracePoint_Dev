@@ -2,6 +2,7 @@
 import sqlite3
 import hashlib
 import os
+import re
 from flask import (
     Flask, render_template, redirect, request, url_for, flash, session, send_from_directory
 )
@@ -103,6 +104,24 @@ def signup():
                 (email, first, last, company_name, hashed_password, account_type)
             )
             con.commit()
+
+            # Folder creation based on account type
+            base_upload_folder = 'uploads'
+            if account_type == 'Admin':
+                folder_path = os.path.join(base_upload_folder, 'admin', email)
+            elif account_type == 'Manager':
+                folder_path = os.path.join(base_upload_folder, 'managers', email)
+            elif account_type == 'User':
+                # Sanitize the company name (replace spaces and non-alphanumeric characters with underscores)
+                sanitized_company_name = re.sub(r'\W+', '_', company_name.strip())
+                folder_path = os.path.join(base_upload_folder, 'users', sanitized_company_name)
+            else:
+                flash('Invalid account type.', 'danger')
+                return redirect(url_for('signup'))
+
+            # Create the folder if it doesn't exist
+            if not os.path.exists(folder_path):
+                os.makedirs(folder_path)
 
             flash('Account created successfully! Please log in with the default password and change it immediately.', 'success')
             return redirect(url_for('login'))
@@ -254,34 +273,42 @@ def view_users():
         con.close()
     return render_template('view_users.html', users=users)
 
-@app.route('/view_files/<path:subpath>', methods=['GET', 'POST'])
 @app.route('/view_files/', defaults={'subpath': ''}, methods=['GET', 'POST'])
+@app.route('/view_files/<path:subpath>', methods=['GET', 'POST'])
 def view_files(subpath):
     if 'email' not in session:
         return redirect(url_for('access_denied'))
-    full_path = os.path.join(app.config['UPLOAD_FOLDER'], subpath)
+    
+    account_type = session.get('account_type')
+    email = session.get('email')
 
-    # Handle folder creation
-    if request.method == 'POST':
-        folder_name = request.form.get('folder_name')
-        if folder_name:
-            new_folder_path = os.path.join(full_path, folder_name)
-            try:
-                os.makedirs(new_folder_path)
-                flash('Folder created successfully!', 'success')
-            except OSError as e:
-                flash(f'Error creating folder: {e}', 'danger')
+    base_upload_folder = 'uploads'
 
-    # Get folder and file list
-    try:
-        items = os.listdir(full_path)
-        folders = [item for item in items if os.path.isdir(os.path.join(full_path, item))]
-        files = [item for item in items if os.path.isfile(os.path.join(full_path, item))]
-    except FileNotFoundError:
-        flash('The specified path does not exist.', 'danger')
-        return redirect(url_for('view_files'))
+    # Determine the folder path based on the account type
+    if account_type == 'Admin':
+        folder_path = os.path.join(base_upload_folder, 'admin', email, subpath)
+    elif account_type == 'Manager':
+        folder_path = os.path.join(base_upload_folder, 'managers', email, subpath)
+    elif account_type == 'User':
+        company_name = session.get('company_name')
+        sanitized_company_name = re.sub(r'\W+', '_', company_name.strip())
+        folder_path = os.path.join(base_upload_folder, 'users', sanitized_company_name, subpath)
+    else:
+        return redirect(url_for('access_denied'))
 
-    return render_template('view_files.html', subpath=subpath, folders=folders, files=files)
+    # Ensure the folder exists
+    if not os.path.exists(folder_path):
+        flash('Folder not found.', 'danger')
+        return redirect(url_for('access_denied'))
+
+    # List items (files and folders) in the directory
+    items = os.listdir(folder_path)
+
+    # Separate folders and files
+    folders = [item for item in items if os.path.isdir(os.path.join(folder_path, item))]
+    files = [item for item in items if os.path.isfile(os.path.join(folder_path, item))]
+
+    return render_template('view_files.html', folders=folders, files=files, subpath=subpath)
 
 @app.route('/upload_files', methods=['GET', 'POST'])
 @app.route('/upload_files/<path:subpath>', methods=['GET', 'POST'])
@@ -345,6 +372,38 @@ def reset_password():
         flash('Your password has been successfully reset.', 'success')
         return redirect(url_for('login'))
     return render_template('reset_password.html')
+
+@app.route('/download_file/<path:filename>', methods=['GET'])
+def download_file(filename):
+    if 'email' not in session:
+        return redirect(url_for('access_denied'))
+
+    account_type = session.get('account_type')
+    email = session.get('email')
+
+    base_upload_folder = 'uploads'
+
+    # Determine the folder path based on the user's account type
+    if account_type == 'Admin':
+        folder_path = os.path.join(base_upload_folder, 'admin', email)
+    elif account_type == 'Manager':
+        folder_path = os.path.join(base_upload_folder, 'managers', email)
+    elif account_type == 'User':
+        company_name = session.get('company_name')
+        sanitized_company_name = re.sub(r'\W+', '_', company_name.strip())
+        folder_path = os.path.join(base_upload_folder, 'users', sanitized_company_name)
+    else:
+        return redirect(url_for('access_denied'))
+
+    # Construct the full path to the file
+    file_path = os.path.join(folder_path, filename)
+
+    # Ensure the file exists and send it to the user
+    if os.path.exists(file_path):
+        return send_from_directory(folder_path, filename)
+    else:
+        flash('File not found.', 'danger')
+        return redirect(url_for('view_files'))
 
 if __name__ == '__main__':
     if not os.path.exists(UPLOAD_FOLDER):
