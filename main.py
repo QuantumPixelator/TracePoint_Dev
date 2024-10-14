@@ -46,19 +46,21 @@ def login():
             hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
             # Fetch the user with the provided Email and Password
-            cur.execute("SELECT * FROM Users WHERE Email = ? AND Password = ?", (email, hashed_password))
+            cur.execute("SELECT First, AccountType, Email FROM Users WHERE Email = ? AND Password = ?", (email, hashed_password))
             user = cur.fetchone()
             if not user:
                 flash('Invalid email or password.', 'danger')
                 return redirect(url_for('login'))
 
-            session['email'] = user[0]
-            session['account_type'] = user[5]
+            # Store the first name and account type in the session
+            session['first_name'] = user[0]  # Assuming the first column is 'FirstName'
+            session['account_type'] = user[1]
+            session['email'] = user[2]
 
             # Redirect based on account type
-            if user[5] == 'Admin':
+            if user[1] == 'Admin':
                 return redirect(url_for('admin_main'))
-            elif user[5] == 'Manager':
+            elif user[1] == 'Manager':
                 return redirect(url_for('manager_main'))
             else:
                 return redirect(url_for('user_main'))
@@ -173,7 +175,7 @@ def manager_main():
 
 @app.route('/user_main')
 def user_main():
-    if 'email' not in session:
+    if session.get('account_type') != 'User':
         return redirect(url_for('access_denied'))
     return render_template('user_main.html')
 

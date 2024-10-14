@@ -11,7 +11,7 @@
     <div class="container admin-dashboard">
         <img src="/static/images/logo.png" alt="TracePoint Logo" class="logo">
         
-        <h2>Welcome, Admin!</h2>
+        <h2>Welcome, {{ session['first_name'] }}!</h2>
         <div class="button-group">
             <a href="/create_user"><button>Create User</button></a>
             <a href="/view_users"><button>View All Users</button></a>
