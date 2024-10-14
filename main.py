@@ -28,14 +28,23 @@ def front_page():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        con = sqlite3.connect('database.db')
-        try:
+    admin_exists = False
+    con = sqlite3.connect('database.db')
+    try:
+        # Check if an admin already exists in the database
+        cur = con.cursor()
+        cur.execute("SELECT * FROM Users WHERE AccountType = 'Admin'")
+        admin = cur.fetchone()
+
+        # Set flag to true if an admin exists
+        if admin:
+            admin_exists = True
+
+        if request.method == 'POST':
             email = request.form['Email']
             password = request.form['Password']
             hashed_password = hashlib.sha256(password.encode()).hexdigest()
 
-            cur = con.cursor()
             # Fetch the user with the provided Email and Password
             cur.execute("SELECT * FROM Users WHERE Email = ? AND Password = ?", (email, hashed_password))
             user = cur.fetchone()
@@ -53,12 +62,16 @@ def login():
                 return redirect(url_for('manager_main'))
             else:
                 return redirect(url_for('user_main'))
-        except Exception as e:
-            print(f"Error: {e}")
-            return render_template('error.html')
-        finally:
-            con.close()
-    return render_template('login.html')
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return render_template('error.html')
+
+    finally:
+        con.close()
+
+    # Pass the admin_exists flag to the template
+    return render_template('login.html', admin_exists=admin_exists)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():

@@ -19,9 +19,11 @@
         </form>
         
         <div class="button-group">
-            <a href="/signup"><button>Create an Account</button></a>
+            {% if not admin_exists %}
+                <a href="/signup"><button>Create an Account</button></a>
+            {% endif %}
             <a href="/forgot_password"><button>Forgot Password</button></a>
-        </div>
+        </div>        
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
